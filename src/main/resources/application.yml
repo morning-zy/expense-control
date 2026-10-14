@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: expense-control
+
+  # 第 2 阶段（接数据库）时把下面几行注释打开，现在不配也不影响启动
+  # datasource:
+  #   url: jdbc:mysql://localhost:3306/expense_control?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+  #   username: root
+  #   password: 你的密码
+  #   driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  # 用 8081 而不是 8080：你机器上的 8080 被本机 nginx 占着了（它挂着"黑马点评"的前端页面）。
+  # 直接写 8080 会启不来，报错是：Web server failed to start. Port 8080 was already in use.
+  port: 8081
