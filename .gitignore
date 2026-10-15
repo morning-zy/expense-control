@@ -24,3 +24,9 @@ target/
 ### 日志与本地配置 ###
 *.log
 logs/
+
+### 含敏感凭据的本地配置（模板见 application-dev.yml.example） ###
+src/main/resources/application-dev.yml
+src/main/resources/application-local.yml
+src/main/resources/application-prod.yml
+*.env

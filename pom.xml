@@ -56,6 +56,20 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <version>3.5.17</version>
+        </dependency>
+
+        <!-- 分页所需的 SQL 解析器（MP 3.5.9 起变成可选依赖，不引不会报错，但分页会静默失效） -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser-4.9</artifactId>
+            <version>3.5.17</version>
+        </dependency>
+
     </dependencies>
 
     <build>

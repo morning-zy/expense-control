@@ -2,14 +2,47 @@ spring:
   application:
     name: expense-control
 
-  # 第 2 阶段（接数据库）时把下面几行注释打开，现在不配也不影响启动
-  # datasource:
-  #   url: jdbc:mysql://localhost:3306/expense_control?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-  #   username: root
-  #   password: 你的密码
-  #   driver-class-name: com.mysql.cj.jdbc.Driver
+  # 本地凭据放在 application-dev.yml（该文件不提交到 Git）
+  # 首次拉取代码后，请复制 application-dev.yml.example 为 application-dev.yml 并填入自己的账号密码
+  profiles:
+    active: dev
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 账号 / 密码在 application-dev.yml
+    url: "jdbc:mysql://localhost:3306/expense_control?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true"
+    hikari:
+      pool-name: ExpenseControlHikariPool
+      minimum-idle: 5
+      maximum-pool-size: 10
+      connection-timeout: 30000
+      max-lifetime: 1800000
+
+  # 返回值里的时间统一格式（覆盖 @JsonFormat 的大部分场景）
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 server:
-  # 用 8081 而不是 8080：你机器上的 8080 被本机 nginx 占着了（它挂着"黑马点评"的前端页面）。
+  # 用 8081 而不是 8080：本机 8080 被 nginx 占着（挂着"黑马点评"的前端页面）
   # 直接写 8080 会启不来，报错是：Web server failed to start. Port 8080 was already in use.
   port: 8081
+
+mybatis-plus:
+  configuration:
+    # 数据库下划线命名 → Java 驼峰命名：dept_name → deptName
+    map-underscore-to-camel-case: true
+    # 把 MyBatis-Plus 生成的 SQL 打到控制台，学习阶段必开，上线必须关
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      # 主键策略：跟随数据库 AUTO_INCREMENT
+      id-type: auto
+      # 逻辑删除：实体类里有 deleted 字段的表自动生效，没有该字段的表不受影响
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  # 手写 SQL 的 XML 位置（现在还用不到，先把约定摆好）
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.maning.expensecontrol.entity
