@@ -1,6 +1,7 @@
 package com.maning.expensecontrol.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.maning.expensecontrol.dto.EmployeeCreateDTO;
 import com.maning.expensecontrol.entity.SysEmployee;
 
 public interface SysEmployeeService {
@@ -9,4 +10,8 @@ public interface SysEmployeeService {
 
     /** 按部门分页查员工，deptId 为 null 表示不限制部门 */
     Page<SysEmployee> pageByDept(Long deptId, long page, long size);
+
+    /** 新增员工，返回新记录的 id */
+    Long create(EmployeeCreateDTO dto);
+
 }

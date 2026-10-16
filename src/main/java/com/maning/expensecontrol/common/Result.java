@@ -1,5 +1,6 @@
 package com.maning.expensecontrol.common;
 
+import com.maning.expensecontrol.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
@@ -22,5 +23,17 @@ public class Result<T> {
     }
     public static <T> Result<T> fail(String message){
         return new Result<>(1,message,null);
+    }
+
+    public static <T> Result<T> fail(ErrorCode errorCode) {
+        return new Result<>(errorCode.getCode(), errorCode.getMessage(), null);
+    }
+
+    public static <T> Result<T> fail(ErrorCode errorCode, String message) {
+        return new Result<>(errorCode.getCode(), message, null);
+    }
+
+    public static <T> Result<T> fail(int code, String message) {
+        return new Result<>(code, message, null);
     }
 }
