@@ -4,7 +4,9 @@ import com.maning.expensecontrol.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,9 +54,32 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<Void> handleDuplicateKey(DuplicateKeyException e) {
-        log.warn("唯一索引冲突", e);
-        return Result.fail(ErrorCode.EMP_NO_DUPLICATE);
+        String rawMsg = e.getMostSpecificCause().getMessage();
+        log.warn("唯一索引冲突: {}", rawMsg);
+        // MySQL 的报错格式：Duplicate entry '值' for key '表名.索引名'
+        if (rawMsg != null && rawMsg.contains("uk_emp_no")) {
+            return Result.fail(ErrorCode.EMP_NO_DUPLICATE);
+        }
+        if (rawMsg != null && rawMsg.contains("uk_form_no")) {
+            return Result.fail(ErrorCode.PARAM_INVALID, "报销单号生成冲突，请重试");
+        }
+        // 其他唯一键冲突，给出通用提示，不要把具体索引名暴露给前端
+        return Result.fail(ErrorCode.PARAM_INVALID, "数据重复，请检查后重试");
     }
 
+    // 请求体缺失 / JSON 语法错误 / 字段类型不匹配（比如 amount 传了 "abc"）
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Result<Void> handleNotReadable(HttpMessageNotReadableException e) {
+        log.warn("请求体解析失败: {}", e.getMessage());
+        return Result.fail(ErrorCode.PARAM_INVALID, "请求体格式不正确：" + e.getMessage());
+    }
+
+    // Content-Type 不是 application/json
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public Result<Void> handleMediaType(HttpMediaTypeNotSupportedException e) {
+        log.warn("Content-Type 不支持: {}", e.getMessage());
+        return Result.fail(ErrorCode.PARAM_INVALID,
+                "Content-Type 必须是 application/json，当前是 " + e.getContentType());
+    }
 
 }

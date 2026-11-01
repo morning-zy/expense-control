@@ -180,4 +180,12 @@ CREATE TABLE `operation_log` (
   KEY `idx_operator_created` (`operator_id`, `created_at`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '操作留痕';
 
+DROP TABLE IF EXISTS `seq_generator`;
+CREATE TABLE IF NOT EXISTS seq_generator (
+                                             seq_name    VARCHAR(64) NOT NULL COMMENT '序列名，如 BX202611',
+    current_val BIGINT      NOT NULL DEFAULT 0 COMMENT '当前值',
+    updated_at  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (seq_name)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='业务单号序列生成器';
+
 SET FOREIGN_KEY_CHECKS = 1;

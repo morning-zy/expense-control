@@ -12,7 +12,11 @@ public enum ErrorCode {
     EMP_NO_DUPLICATE(2001, "工号已存在"),
     DEPT_NOT_FOUND(2002, "所属部门不存在"),
 
-    INTERNAL_ERROR(5000, "服务器内部错误");
+    INTERNAL_ERROR(5000, "服务器内部错误"),
+
+    CATEGORY_NOT_FOUND(2003, "费用科目不存在或已停用"),
+    EMPLOYEE_NOT_FOUND(2004, "员工不存在"),
+    ITEM_AMOUNT_EXCEED_LIMIT(2005, "单笔金额超过科目限额");
 
     private final int code;
     private final String message;

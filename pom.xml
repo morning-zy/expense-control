@@ -87,6 +87,17 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <!-- 不开启 preview：项目里没有用任何预览语法，
+                         加上它反而会让 class 文件被打上 preview 标记，
+                         运行时必须额外加对应参数才能跑 -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maning.expensecontrol.mapper.ExpenseFormMapper">
+
+    <sql id="pageWhere">
+        WHERE f.deleted = 0
+        <if test="q.status != null and q.status != ''">
+            AND f.status = #{q.status}
+        </if>
+        <if test="q.categoryId != null">
+            AND f.category_id = #{q.categoryId}
+        </if>
+        <if test="q.applicantId != null">
+            AND f.applicant_id = #{q.applicantId}
+        </if>
+        <if test="q.keyword != null and q.keyword != ''">
+            AND (f.form_no LIKE CONCAT('%', #{q.keyword}, '%')
+            OR f.reason LIKE CONCAT('%', #{q.keyword}, '%'))
+        </if>
+        <if test="q.dateFrom != null">
+            AND f.created_at &gt;= #{q.dateFrom}
+        </if>
+        <if test="q.dateTo != null">
+            AND f.created_at &lt; DATE_ADD(#{q.dateTo}, INTERVAL 1 DAY)
+        </if>
+    </sql>
+
+    <select id="selectFormPage" resultType="com.maning.expensecontrol.dto.ExpenseFormListVO">
+        SELECT f.id,
+        f.form_no        AS formNo,
+        f.applicant_id   AS applicantId,
+        e.name           AS applicantName,
+        f.dept_id        AS deptId,
+        d.dept_name      AS deptName,
+        f.category_id    AS categoryId,
+        c.category_name  AS categoryName,
+        f.total_amount   AS totalAmount,
+        f.item_count     AS itemCount,
+        f.reason,
+        f.status,
+        f.total_node     AS totalNode,
+        f.submit_time    AS submitTime,
+        f.created_at     AS createdAt
+        FROM expense_form f
+        LEFT JOIN sys_employee        e ON e.id = f.applicant_id
+        LEFT JOIN sys_department      d ON d.id = f.dept_id
+        LEFT JOIN expense_category    c ON c.id = f.category_id
+        <include refid="pageWhere"/>
+        ORDER BY f.id DESC
+    </select>
+</mapper>
