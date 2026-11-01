@@ -188,4 +188,23 @@ CREATE TABLE IF NOT EXISTS seq_generator (
     PRIMARY KEY (seq_name)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='业务单号序列生成器';
 
+-- ------------------------------------------------------------
+-- 10. approval_task 审批任务（提交时按审批链快照，支撑待办列表）
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS `approval_task`;
+CREATE TABLE `approval_task` (
+  `id`               BIGINT       NOT NULL AUTO_INCREMENT           COMMENT '主键',
+  `form_id`          BIGINT       NOT NULL                          COMMENT '报销单 id',
+  `node_seq`         INT          NOT NULL                          COMMENT '节点序号 1/2/3',
+  `node_name`        VARCHAR(64)  NOT NULL                          COMMENT '节点名称：主管审批/部门经理审批/总经理审批',
+  `approver_id`      BIGINT       NOT NULL                          COMMENT '该节点审批人 id（提交时快照）',
+  `status`           VARCHAR(16)  NOT NULL DEFAULT 'PENDING'        COMMENT 'PENDING/APPROVED/REJECTED/SKIPPED',
+  `approval_comment` VARCHAR(500)     NULL                          COMMENT '审批意见',
+  `decided_at`       DATETIME         NULL                          COMMENT '处理时间',
+  `created_at`       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_form_node` (`form_id`, `node_seq`),
+  KEY `idx_approver_pending` (`approver_id`, `status`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '审批任务';
+
 SET FOREIGN_KEY_CHECKS = 1;

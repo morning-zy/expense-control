@@ -403,3 +403,64 @@ Content-Type: {{json}}
 ### HAVING f.total_amount <> IFNULL(SUM(i.amount), 0)
 ###     OR f.item_count  <> COUNT(i.id);
 
+
+
+### ============================================================
+### 3-4 审批状态机
+### ============================================================
+### 当前登录人用请求头 X-User-Id 模拟，默认 1 = 张伟（申请人）
+### 审批链：张伟(1) → 吴涛(9, 主管) → 王强(3, 经理) → 陈明(5, 总经理)
+
+### 场景 1：先建一张 500 元的单（1 级审批），记下返回的 id
+POST http://localhost:8081/api/expense-forms
+Content-Type: application/json
+
+{
+  "categoryId": 1,
+  "reason": "审批演示-500",
+  "items": [
+    { "expenseDate": "2026-11-01", "amount": 500.00, "description": "打车" }
+  ]
+}
+
+### 场景 2：提交审批 → DRAFT 变 APPROVING，生成 1 个审批节点（吴涛）
+POST http://localhost:8081/api/expense-forms/1/submit
+
+### 场景 3：查看审批进度（应只有 1 个 PENDING 节点，审批人吴涛）
+GET http://localhost:8081/api/expense-forms/1/tasks
+
+### 场景 4：越权审批 —— 用王强(3) 去审吴涛的节点 → 期望 2008
+POST http://localhost:8081/api/expense-forms/1/approve
+X-User-Id: 3
+Content-Type: application/json
+
+{ "comment": "越权尝试" }
+
+### 场景 5：吴涛(9) 正常通过 → 最后一个节点，整单 APPROVED
+POST http://localhost:8081/api/expense-forms/1/approve
+X-User-Id: 9
+Content-Type: application/json
+
+{ "comment": "同意报销" }
+
+### 场景 6：已通过的单据再提交 → 期望 2006
+POST http://localhost:8081/api/expense-forms/1/submit
+
+### 场景 7：我的待办（吴涛视角）
+GET http://localhost:8081/api/approvals/pending
+X-User-Id: 9
+
+### ------------------------------------------------------------
+### 【并发核心】两个请求同时点「通过」
+### 在 HTTP Client 里连点两次场景 5 的请求（同一张待审批的单）
+### 期望：1 个 code=0，另一个 2006「你已经处理过该单据」
+### 数据库核对：该 form 的 APPROVE 流水只能有 1 条
+### SELECT action, COUNT(*) FROM approval_record WHERE form_id = ? GROUP BY action;
+### ------------------------------------------------------------
+
+### 驳回场景：2000 元的单，吴涛驳回 → 节点1 REJECTED，节点2 SKIPPED，整单 REJECTED
+POST http://localhost:8081/api/expense-forms/1/reject
+X-User-Id: 9
+Content-Type: application/json
+
+{ "comment": "发票不合规，退回" }
