@@ -24,17 +24,17 @@ INSERT INTO `sys_department` (`id`, `dept_code`, `dept_name`, `parent_id`, `mana
 --   也就是说：张伟的「直属主管」是吴涛，「部门负责人」是王强
 -- ------------------------------------------------------------
 DELETE FROM `sys_employee`;
-INSERT INTO `sys_employee` (`id`, `emp_no`, `name`, `dept_id`, `position`, `job_level`, `manager_id`, `status`) VALUES
-  (1,  'E001', '张伟', 2, '后端开发工程师', 1, 9,    1),   -- 申请人，最底层
-  (2,  'E002', '李娜', 2, '前端开发工程师', 1, 9,    1),
-  (3,  'E003', '王强', 2, '技术经理',       3, 5,    1),   -- 技术部负责人
-  (4,  'E004', '刘敏', 3, '会计',           1, 6,    1),
-  (5,  'E005', '陈明', 1, '总经理',         5, NULL, 1),   -- 最高层，无主管
-  (6,  'E006', '赵丽', 3, '财务总监',       4, 5,    1),   -- 财务审批节点（第 3 级）
-  (7,  'E007', '孙磊', 4, '市场经理',       3, 5,    1),
-  (8,  'E008', '周洋', 4, '市场专员',       1, 7,    1),
-  (9,  'E009', '吴涛', 2, '开发组长',       2, 3,    1),   -- 张伟的直属主管
-  (10, 'E010', '郑洁', 3, '出纳',           1, 6,    1);
+INSERT INTO `sys_employee` (`id`, `emp_no`, `name`, `dept_id`, `position`, `job_level`, `manager_id`, `status`, `password_hash`) VALUES
+  (1,  'E001', '张伟', 2, '后端开发工程师', 1, 9,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),   -- 申请人，最底层
+  (2,  'E002', '李娜', 2, '前端开发工程师', 1, 9,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),
+  (3,  'E003', '王强', 2, '技术经理',       3, 5,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),   -- 技术部负责人
+  (4,  'E004', '刘敏', 3, '会计',           1, 6,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),
+  (5,  'E005', '陈明', 1, '总经理',         5, NULL, 1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),   -- 最高层，无主管
+  (6,  'E006', '赵丽', 3, '财务总监',       4, 5,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),   -- 财务审批节点（第 3 级）
+  (7,  'E007', '孙磊', 4, '市场经理',       3, 5,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),
+  (8,  'E008', '周洋', 4, '市场专员',       1, 7,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),
+  (9,  'E009', '吴涛', 2, '开发组长',       2, 3,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw='),   -- 张伟的直属主管
+  (10, 'E010', '郑洁', 3, '出纳',           1, 6,    1, 'pbkdf2$120000$GcbMdmhdPabM3o3rCiixmg==$/64CRt89FKXPpBaQ60dtR2fSM0o/tWuJ6MCEmVBLuUw=');
 
 -- ------------------------------------------------------------
 -- 费用科目

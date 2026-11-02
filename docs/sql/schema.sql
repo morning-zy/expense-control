@@ -48,6 +48,7 @@ CREATE TABLE `sys_employee` (
   `job_level`  TINYINT     NOT NULL DEFAULT 1                COMMENT '职级，1 最低；审批规则会用到',
   `manager_id` BIGINT          NULL                          COMMENT '直属主管 id，总经理为空',
   `status`     TINYINT     NOT NULL DEFAULT 1                COMMENT '状态：1 在职 / 0 离职',
+  `password_hash` VARCHAR(200) NOT NULL DEFAULT ''           COMMENT 'PBKDF2 加盐哈希，格式 pbkdf2$迭代次数$盐$摘要',
   `created_at` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),

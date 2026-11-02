@@ -8,6 +8,7 @@ public enum ErrorCode {
 
     PARAM_INVALID(1001, "参数校验失败"),
     NOT_FOUND(1002, "资源不存在"),
+    UNAUTHORIZED(401, "未登录或登录已过期"),
 
     EMP_NO_DUPLICATE(2001, "工号已存在"),
     DEPT_NOT_FOUND(2002, "所属部门不存在"),
@@ -21,7 +22,8 @@ public enum ErrorCode {
     // ===== 3-4 审批状态机 =====
     FORM_STATUS_INVALID(2006, "单据当前状态不允许该操作"),
     NO_APPROVER_CONFIGURED(2007, "未配置审批人，请联系管理员"),
-    NOT_CURRENT_APPROVER(2008, "你不是当前节点的审批人");
+    NOT_CURRENT_APPROVER(2008, "你不是当前节点的审批人"),
+    LOGIN_FAILED(2009, "工号或密码错误");
 
     private final int code;
     private final String message;

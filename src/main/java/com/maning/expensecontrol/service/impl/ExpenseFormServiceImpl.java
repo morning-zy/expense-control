@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maning.expensecontrol.common.PageResult;
+import com.maning.expensecontrol.common.UserContext;
 import com.maning.expensecontrol.dto.*;
 import com.maning.expensecontrol.entity.*;
 import com.maning.expensecontrol.exception.BusinessException;
@@ -30,8 +31,7 @@ public class ExpenseFormServiceImpl implements ExpenseFormService {
     private final SysDepartmentMapper departmentMapper;
     private final SeqGeneratorMapper seqGeneratorMapper;
 
-    /** 3-1 阶段写死，第 7 阶段接登录用户 */
-    private static final Long CURRENT_USER_ID = 1L;
+    // 申请人取自登录令牌（AuthInterceptor 已校验并放进 UserContext），不再写死
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -55,7 +55,8 @@ public class ExpenseFormServiceImpl implements ExpenseFormService {
         }
 
         // 3. 查申请人，拿部门（不信前端传的 deptId）
-        SysEmployee applicant = employeeMapper.selectById(CURRENT_USER_ID);
+        Long currentUserId = UserContext.requireUserId();
+        SysEmployee applicant = employeeMapper.selectById(currentUserId);
         if (applicant == null) {
             throw new BusinessException(ErrorCode.EMPLOYEE_NOT_FOUND);
         }
@@ -68,7 +69,7 @@ public class ExpenseFormServiceImpl implements ExpenseFormService {
         // 5. 插入主表
         ExpenseForm form = new ExpenseForm();
         form.setFormNo(generateFormNo());
-        form.setApplicantId(CURRENT_USER_ID);
+        form.setApplicantId(currentUserId);
         form.setDeptId(applicant.getDeptId());
         form.setCategoryId(dto.getCategoryId());
         form.setTotalAmount(total);
