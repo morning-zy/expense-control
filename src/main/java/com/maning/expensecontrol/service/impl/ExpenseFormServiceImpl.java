@@ -3,6 +3,7 @@ package com.maning.expensecontrol.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.maning.expensecontrol.annotation.OpLog;
 import com.maning.expensecontrol.common.PageResult;
 import com.maning.expensecontrol.common.UserContext;
 import com.maning.expensecontrol.dto.*;
@@ -35,6 +36,7 @@ public class ExpenseFormServiceImpl implements ExpenseFormService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @OpLog(bizType = "EXPENSE_FORM", action = "CREATE")
     public Long create(ExpenseFormCreateDTO dto) {
 
         // 1. 科目必须存在且启用

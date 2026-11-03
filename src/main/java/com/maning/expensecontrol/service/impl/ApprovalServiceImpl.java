@@ -1,6 +1,7 @@
 package com.maning.expensecontrol.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.maning.expensecontrol.annotation.OpLog;
 import com.maning.expensecontrol.dto.ApprovalTaskVO;
 import com.maning.expensecontrol.dto.ApproverNode;
 import com.maning.expensecontrol.entity.ApprovalRecord;
@@ -35,6 +36,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @OpLog(bizType = "EXPENSE_FORM", action = "SUBMIT")
     public void submit(Long formId) {
         ExpenseForm form = formMapper.selectById(formId);
         if (form == null) {
@@ -78,6 +80,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @OpLog(bizType = "EXPENSE_FORM", action = "APPROVE")
     public void approve(Long formId, Long operatorId, String comment) {
         ExpenseForm form = requireApproving(formId);
         int node = form.getCurrentNode();
@@ -103,6 +106,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @OpLog(bizType = "EXPENSE_FORM", action = "REJECT")
     public void reject(Long formId, Long operatorId, String comment) {
         ExpenseForm form = requireApproving(formId);
         int node = form.getCurrentNode();

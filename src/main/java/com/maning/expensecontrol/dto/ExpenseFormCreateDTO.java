@@ -6,11 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Setter
+@ToString                    // 操作留痕切面会把入参 toString 写进审计表，没有它只会打印对象地址
 public class ExpenseFormCreateDTO {
     @NotNull(message = "费用科目不能为空")
     private Long categoryId;

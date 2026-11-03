@@ -487,3 +487,34 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "comment": "发票不合规，退回" }
+
+
+### ============================================================
+### 5-2 操作留痕（审计轨迹）
+### ============================================================
+### 凡是标了 @OpLog 的 Service 方法，成功执行后自动写一条 operation_log。
+### 抛异常不写（事务回滚了，写了就是假记录）。
+
+### 查某张单的完整操作历史（按时间正序，像一条时间线）
+### 期望：CREATE → SUBMIT → APPROVE(或 REJECT) 依次出现，
+###       operatorId 分别是创建人/提交人/审批人，ip 是真实来源
+GET {{host}}/api/operation-logs/EXPENSE_FORM/1
+Authorization: Bearer {{token}}
+
+### 直接查表核对（Database 控制台）
+### SELECT id, biz_type, biz_id, operator_id, action, LEFT(new_value, 80), ip, created_at
+### FROM operation_log ORDER BY id DESC LIMIT 20;
+
+### 留痕的边界验证：故意让业务失败（科目 999），确认不写日志
+POST {{host}}/api/expense-forms
+Content-Type: {{json}}
+Authorization: Bearer {{token}}
+
+{
+  "categoryId": 999,
+  "reason": "留痕不该记这条",
+  "items": [
+    { "expenseDate": "2026-11-03", "amount": 100.00, "description": "x" }
+  ]
+}
+### 跑完后 operation_log 的最大 id 不应变化
