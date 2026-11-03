@@ -32,8 +32,8 @@ mybatis-plus:
   configuration:
     # 数据库下划线命名 → Java 驼峰命名：dept_name → deptName
     map-underscore-to-camel-case: true
-    # 把 MyBatis-Plus 生成的 SQL 打到控制台，学习阶段必开，上线必须关
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # SQL 日志在 application-dev.yml 里开（StdOutImpl），这里不写默认值：
+    # 一旦写死在这里，生产环境也会把每条 SQL 刷到 stdout，既拖慢性能又泄露数据
   global-config:
     banner: false
     db-config:

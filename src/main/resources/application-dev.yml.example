@@ -12,3 +12,8 @@ spring:
     #   GRANT SELECT, INSERT, UPDATE, DELETE ON `expense_control`.* TO 'expense_app'@'localhost';
     username: expense_app
     password: "改成你自己的密码"
+
+# 开发环境把每条 SQL 打到控制台（只看不改，写死在这里不影响生产）
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
